@@ -1,4 +1,4 @@
 package dev.gurung.repositories;
 
-public class ProductRepo {
+public class InventoryRepo {
 }
