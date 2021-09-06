@@ -1,6 +1,7 @@
 # IDE-specific files and folders
 .idea/
 *.iml
+*.DS_Store
 
 # Build folders and files
 target/
