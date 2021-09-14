@@ -5,18 +5,45 @@ public class Inventory {
     private String productName;
     private Integer quantity;
     private Double price;
-    private Double discount;
     private User user;
 
     public Inventory() {
     }
 
-    public Inventory(Integer id, String productName, Integer quantity, Double price, Double discount, User user) {
+    public Inventory(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public Inventory(Integer id, Integer quantity) {
+        this.id = id;
+        this.quantity = quantity;
+    }
+
+    public Inventory(Integer id, Integer quantity, Double price) {
+        this.id = id;
+        this.quantity = quantity;
+        this.price = price;
+    }
+
+    public Inventory(Integer id, String productName, Integer quantity, Double price) {
         this.id = id;
         this.productName = productName;
         this.quantity = quantity;
         this.price = price;
-        this.discount = discount;
+    }
+
+    public Inventory(String productName, Integer quantity, Double price, User user) {
+        this.productName = productName;
+        this.quantity = quantity;
+        this.price = price;
+        this.user = user;
+    }
+
+    public Inventory(Integer id, String productName, Integer quantity, Double price, User user) {
+        this.id = id;
+        this.productName = productName;
+        this.quantity = quantity;
+        this.price = price;
         this.user = user;
     }
 
@@ -52,14 +79,6 @@ public class Inventory {
         this.price = price;
     }
 
-    public Double getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(Double discount) {
-        this.discount = discount;
-    }
-
     public User getUser() {
         return user;
     }
@@ -75,7 +94,6 @@ public class Inventory {
                 ", productName='" + productName + '\'' +
                 ", quantity=" + quantity +
                 ", price=" + price +
-                ", discount=" + discount +
                 ", user=" + user +
                 '}';
     }

@@ -10,6 +10,19 @@ public class Cart {
     public Cart() {
     }
 
+    public Cart(Integer id, Integer numberProducts, Double totalPrice) {
+        this.id = id;
+        this.numberProducts = numberProducts;
+        TotalPrice = totalPrice;
+    }
+
+    public Cart(User user, Inventory inventory, Integer numberProducts, Double totalPrice) {
+        this.user = user;
+        this.inventory = inventory;
+        this.numberProducts = numberProducts;
+        TotalPrice = totalPrice;
+    }
+
     public Cart(Integer id, User user, Inventory inventory, Integer numberProducts, Double totalPrice) {
         this.id = id;
         this.user = user;
