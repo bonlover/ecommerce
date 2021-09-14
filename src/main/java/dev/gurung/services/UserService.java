@@ -1,0 +1,66 @@
+package dev.gurung.services;
+
+import dev.gurung.models.User;
+import dev.gurung.repositories.UserRepo;
+
+import java.util.List;
+
+public class UserService {
+    private static UserRepo userRepo = new UserRepo();
+
+    public User getUser(Integer id){
+        User user = userRepo.getById(id);
+
+        // check to make sure User object is not null
+        if (user != null) {
+            // now check to make sure it matches
+            if (id == user.getId() && user.getRole().equals("Admin")) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public User login(String email, String password) {
+
+        User user = userRepo.getByEmail(email); // more of the Sole Responsibility Principle at work
+
+        // check to make sure User object is not null
+        if (user != null) {
+            // now check to make sure it matches
+            if (email.equals(user.getEmail()) && password.equals(user.getPassword())) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public boolean signup(String firstName, String lastName, String email, String password){
+
+        User u = userRepo.add( new User(firstName, lastName, email, password));
+
+        if(u != null){
+
+            return true;
+        }
+        return  false;
+    }
+
+    public List<User> getAllCustomers(){
+        return userRepo.getAll();
+    }
+
+    public boolean updateProfile(Integer id, String firstName,String lastName){
+        User user = userRepo.getById(id);
+
+        if(user.getId() == id){
+            user.setId(id);
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+
+            userRepo.update(user);
+            return true;
+        }
+        return false;
+    }
+}
