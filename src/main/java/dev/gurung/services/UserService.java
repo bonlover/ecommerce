@@ -1,5 +1,6 @@
 package dev.gurung.services;
 
+import dev.gurung.exceptions.EmailAlreadyExistsException;
 import dev.gurung.models.User;
 import dev.gurung.repositories.UserRepo;
 
@@ -21,6 +22,7 @@ public class UserService {
         return null;
     }
 
+
     public User login(String email, String password) {
 
         User user = userRepo.getByEmail(email); // more of the Sole Responsibility Principle at work
@@ -37,13 +39,19 @@ public class UserService {
 
     public boolean signup(String firstName, String lastName, String email, String password){
 
-        User u = userRepo.add( new User(firstName, lastName, email, password));
+        try{
+            User existEmail = userRepo.getByEmail(email);
 
-        if(u != null){
-
-            return true;
+            if(existEmail == null){
+                    userRepo.add( new User(firstName, lastName, email, password));
+                    return true;
+            }
+            throw new EmailAlreadyExistsException("Email: '" +email +"'  already taken, try other!");
+        }catch (EmailAlreadyExistsException e){
+            System.out.println(e.getMessage());
+            System.out.println("................................................................\n");
+            return false;
         }
-        return  false;
     }
 
     public List<User> getAllCustomers(){

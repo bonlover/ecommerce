@@ -1,5 +1,6 @@
 package dev.gurung.views;
 
+import dev.gurung.exceptions.ScannerInputException;
 import dev.gurung.models.User;
 import dev.gurung.services.InventoryService;
 import dev.gurung.services.UserService;
@@ -27,43 +28,59 @@ public class CustomerMenuView {
             System.out.println("\nEnter your number:");
 
             String result = scanner.nextLine();
+            try {
+                if (result.matches(".*\\d.*")) {
 
-            //do something with inputs
-            switch (result){
-                case "1":
-                    inventoryService.getAllInventories().forEach(System.out::println);
-                    break;
+                    //do something with inputs
+                    switch (result){
+                        case "1":
+                            inventoryService.getAllInventories().forEach(System.out::println);
+                            System.out.println("................................................................\n");
 
-                case "2":
-                    scanner.nextLine();
-                    System.out.println("Please enter your email:");
-                    String email = scanner.nextLine();
+                            break;
 
-                    System.out.println("Please enter your password:");
-                    String password = scanner.nextLine();
+                        case "2":
+                            System.out.println("Please enter your email:");
+                            String email = scanner.nextLine();
 
+                            System.out.println("Please enter your password:");
+                            String password = scanner.nextLine();
 
-                    // We need a login service to check if email and password match credentials stored in the database
-                    User user = userService.login(email, password);
+                            User user = userService.login(email, password);
 
-                    if (user != null  && user.getRole().equals("Customer")) {
+                            if (user != null  && user.getRole().equals("Customer")) {
 
-                        System.out.println("Welcome " + user.getFirstName().toUpperCase() + ",You are in Dashboard.");
-                        System.out.println("your id : " +user.getId());
-                        CustomerDashboard.display();
+                                System.out.println("................................................................\n");
+                                System.out.println("Welcome " + user.getFirstName().toUpperCase() + ",You are in Dashboard.");
+                                System.out.println("your id : " +user.getId());
+                                System.out.println("................................................................\n");
+
+                                CustomerDashboard.display();
+
+                            }
+                            else {
+                                System.out.println("Credentials do not match. ");
+                            }
+                            System.out.println("................................................................\n");
+
+                            break;
+
+                        case "0":
+                            running = false;
+                            break;
+//
+//                        default:
+//                            System.out.println("Invalid Input");
                     }
-                    else {
-                        System.out.println("Credentials do not match. ");
-                    }
-                    break;
 
-                case "0":
-                    running = false;
-                    break;
+                }
+                throw new ScannerInputException("Invalid Input  '" + result + "', Enter Number from Choice!");
+            }catch (ScannerInputException e){
+                System.out.println(e.getMessage());
+                System.out.println("................................................................\n");
 
-                default:
-                    System.out.println("Invalid Input");
             }
+
         }
     }
 }
