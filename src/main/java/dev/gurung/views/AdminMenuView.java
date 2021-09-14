@@ -1,5 +1,7 @@
 package dev.gurung.views;
 
+import dev.gurung.exceptions.ScannerInputException;
+import dev.gurung.exceptions.UnauthorizedUserException;
 import dev.gurung.models.User;
 import dev.gurung.services.UserService;
 
@@ -23,45 +25,64 @@ public class AdminMenuView {
             //inputs
 
             System.out.println("\nEnter your number:");
+
             String result = scanner.nextLine();
 
+            try {
+                if (result.matches(".*\\d.*")) {
+                    //do something with inputs
+                    switch (result) {
+                        case "1":
+                            System.out.println("Please enter your email:");
+                            String email = scanner.nextLine();
 
-            //do something with inputs
-            switch (result){
-                case "1":
-                    scanner.nextLine();
-                    System.out.println("Please enter your email:");
-                    String email = scanner.nextLine();
-
-                    System.out.println("Please enter your password:");
-                    String password = scanner.nextLine();
+                            System.out.println("Please enter your password:");
+                            String password = scanner.nextLine();
 
 
-                    // We need a login service to check if email and password match credentials stored in the database
-                    User user = userService.login(email, password);
+                            // We need a login service to check if email and password match credentials stored in the database
 
-                    if (user != null  && user.getRole().equals("Admin")) {
+                            try{
+                                User user = userService.login(email, password);
 
-                        System.out.println("Welcome " + user.getFirstName().toUpperCase() + ",You are in Admin Dashboard.");
-                        System.out.println( "Your id : " +user.getId());
-                        AdminDashboard.display();
+                                if (user != null && user.getRole().equals("Admin")) {
 
+                                    System.out.println("................................................................\n");
+                                    System.out.println("Welcome " + user.getFirstName().toUpperCase() + ",You are in Admin Dashboard.");
+                                    System.out.println("Your id : " + user.getId());
+                                    System.out.println("................................................................\n");
+
+                                    AdminDashboard.display();
+
+
+                                } else {
+                                    System.out.println("Credentials do not match. ");
+                                }
+
+                                throw new UnauthorizedUserException("Unauthorized User");
+
+                            }catch (UnauthorizedUserException e){
+                                System.out.println(e.getMessage());
+                                System.out.println("..................................................................\n");
+                            }
+
+                            break;
+
+                        case "0":
+                            running = false;
+                            break;
+//                       default:
+//                           System.out.println("Invalid Input");
                     }
-                    else if(user == null || !user.getRole().equals( "Admin") ) {
-                         System.out.println("Your Not Authorized");
-                    }
-                    else {
-                        System.out.println("Credentials do not match. ");
-                    }
-                    break;
 
-                case "0":
-                    running = false;
-                    break;
-                default:
-                    System.out.println("Invalid Input");
+
+                }
+                throw new ScannerInputException("Invalid Input  '" + result + "', Enter Number from Choice!");
+
+            } catch (ScannerInputException ex) {
+                System.out.println(ex.getMessage());
+                System.out.println("................................................................\n");
             }
         }
-
     }
 }

@@ -30,48 +30,64 @@ public class MainMenuView {
             System.out.println("\nEnter your number:");
 
             String result = scanner.nextLine();
+            try {
+                if(result.matches(".*\\d.*")){
 
-            switch (result) {
-                case "1":
-                    inventoryService.getAllInventories().forEach(System.out::println);
-                    break;
-                case "2":
-                    AdminMenuView.display();
-                    break;
+                    switch (result) {
+                        case "1":
+                            inventoryService.getAllInventories().forEach(System.out::println);
+                            break;
+                        case "2":
+                            AdminMenuView.display();
+                            System.out.println("................................................................\n");
 
-                case "3":
-                    CustomerMenuView.display();
-                    break;
+                            break;
 
-                case "4":
-                    System.out.println("firstName:");
-                    String firstName = scanner.nextLine();
-                    System.out.println("lastName:");
-                    String lastName = scanner.nextLine();
-                    System.out.println("email:");
-                    String email = scanner.nextLine();
-                    System.out.println("password:");
-                    String password = scanner.nextLine();
+                        case "3":
+                            CustomerMenuView.display();
+                            System.out.println("................................................................\n");
 
-                    // We need a login service to check if email and password match credentials stored in the database
-                    boolean isCreated = userService.signup(firstName, lastName, email, password);
+                            break;
 
-                    if (isCreated) {
-                        System.out.println("Successfully register");
-                        CustomerDashboard.display();
-                    } else {
-                        System.out.println("Something went wrong, try Again.");
+                        case "4":
+                            System.out.println("firstName:");
+                            String firstName = scanner.nextLine();
+                            System.out.println("lastName:");
+                            String lastName = scanner.nextLine();
+                            System.out.println("email:");
+                            String email = scanner.nextLine();
+                            System.out.println("password:");
+                            String password = scanner.nextLine();
+
+                            // We need a login service to check if email and password match credentials stored in the database
+                            boolean isCreated = userService.signup(firstName, lastName, email, password);
+
+                            if (!isCreated) {
+                                MainMenuView.display();
+                            }else {
+                                System.out.println("Successfully register");
+                                System.out.println("..................................................................\n");
+                                CustomerDashboard.display();
+                            }
+                            break;
+
+                        case "0":
+                            running = false;
+                            break;
+//                        default:
+//                            System.out.println("Invalid Input");
+
                     }
 
-                    break;
+                }
+                throw new ScannerInputException("Invalid Input  '" +result + "', Enter Number from Choice!");
 
-                case "0":
-                    running = false;
-                    break;
-                default:
-                    System.out.println("Invalid Input");
-
+            }catch (ScannerInputException ex){
+                System.out.println(ex.getMessage());
+                System.out.println("................................................................\n");
             }
+
+
         }
     }
 }

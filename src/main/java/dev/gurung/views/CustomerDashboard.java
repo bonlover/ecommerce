@@ -1,5 +1,6 @@
 package dev.gurung.views;
 
+import dev.gurung.exceptions.ScannerInputException;
 import dev.gurung.services.CartService;
 import dev.gurung.services.InventoryService;
 import dev.gurung.services.InvoiceService;
@@ -35,130 +36,137 @@ public class CustomerDashboard {
             System.out.println("\nEnter your number:");
 
             String result = scanner.nextLine();
+            try {
+                if (result.matches(".*\\d.*")) {
 
+                    //do something with inputs
+                    switch (result){
+                        case "1":
+                            inventoryService.getAllInventories().forEach(System.out::println);
+                            System.out.println("................................................................\n");
+                            break;
 
-            //do something with inputs
-            switch (result){
-                case "1":
-                    inventoryService.getAllInventories().forEach(System.out::println);
-                    break;
+                        case "2":
+                            System.out.println("product name : ");
+                            String productName = scanner.nextLine();
+                            System.out.println("Buyer id : ");
+                            int buyer_id = scanner.nextInt();
+                            System.out.println("quantity: ");
+                            int editQuantity = scanner.nextInt();
+                            boolean isBuy = invoiceServer.buyProduct(buyer_id, productName, editQuantity);
 
-                case "2":
-                    scanner.nextLine();
-                    System.out.println("product name : ");
-                    String productName = scanner.nextLine();
-                    System.out.println("Buyer id : ");
-                    int buyer_id = scanner.nextInt();
-                    System.out.println("quantity: ");
-                    int editQuantity = scanner.nextInt();
+                            if(isBuy) {
+                                System.out.println("Successfully buy a product.");
+                                System.out.println("................................................................\n");
+                            }
+                            break;
 
+                        case "3":
+                            scanner.nextLine();
+                            System.out.println("Buyer id : ");
+                            int userId = scanner.nextInt();
+                            scanner.nextLine();
+                            System.out.println("product name : ");
+                            String product = scanner.nextLine();
+                            System.out.println("Number quantity: ");
+                            int items = scanner.nextInt();
 
-                    // We need a login service to check if email and password match credentials stored in the database
-//                    boolean isBuy = inventoryService.buyProduct(buyer_id, productName, editQuantity);
-                    boolean isBuy = invoiceServer.buyProduct(buyer_id, productName, editQuantity);
+                            boolean isCarted = cartService.addToCart(userId, product, items);
 
-//                    System.out.println(userService.updateProfile());
+                            if(isCarted) {
+                                System.out.println("Successfully add a product in cart.");
+                            } else {
+                                System.out.println("Something went wrong, try Again.");
+                            }
+                            System.out.println("................................................................\n");
+                            break;
 
-                    if(isBuy) {
-                        System.out.println("Successfully buy a product.");
-                    } else {
-                        System.out.println("Something went wrong, try Again.");
+                        case "4":
+                            scanner.nextLine();
+                            System.out.println("Cart id : ");
+                            int cartId = scanner.nextInt();
+
+                            boolean isDeleted = cartService.removeCart(cartId);
+
+                            if(isDeleted) {
+                                System.out.println("Successfully Deleted a Cart's data.");
+                            } else {
+                                System.out.println("Something went wrong, try Again.");
+                            }
+                            System.out.println("................................................................\n");
+                            break;
+
+                        case "5":
+                            scanner.nextLine();
+
+                            System.out.println("firstName:");
+                            String firstName = scanner.nextLine();
+                            System.out.println("lastName:");
+                            String lastName = scanner.nextLine();
+                            System.out.println("Customer id : ");
+                            int id = scanner.nextInt();
+
+                            boolean isUpdated = userService.updateProfile(id, firstName, lastName);
+
+                            if(isUpdated) {
+                                System.out.println("Successfully Updated.");
+                            } else {
+                                System.out.println("Something went wrong, try Again.");
+                            }
+                            System.out.println("................................................................\n");
+                            break;
+
+                        case "6":
+                            scanner.nextLine();
+                            System.out.println("Your id : ");
+                            int yourId = scanner.nextInt();
+                            cartService.getUserCarts(yourId).forEach(System.out::println);
+                            System.out.println("................................................................\n");
+                            break;
+
+                        case "7":
+
+                            scanner.nextLine();
+                            System.out.println("Cart Id:");
+                            int cart_Id = scanner.nextInt();
+                            scanner.nextLine();
+                            System.out.println("product Name:");
+                            String product_name = scanner.nextLine();
+                            System.out.println("Number of quantity : ");
+                            int quantity = scanner.nextInt();
+
+                            boolean isCartUpdated = cartService.updateCart(cart_Id, product_name, quantity);
+
+                            if(isCartUpdated) {
+                                System.out.println("Successfully Updated.");
+
+                            } else {
+                                System.out.println("Something went wrong, try Again.");
+
+                            }
+                            System.out.println("................................................................\n");
+                            break;
+
+                        case "8":
+                            scanner.nextLine();
+                            System.out.println("Your id : ");
+                            int uId = scanner.nextInt();
+                            invoiceServer.getUserInvoices(uId).forEach(System.out::println);
+                            System.out.println("................................................................\n");
+                            break;
+
+                        case "0":
+                            running = false;
+                            break;
+//                        default:
+//                            System.out.println("Invalid Input");
                     }
-                    break;
+                }
+                throw new ScannerInputException("Invalid Input  '" + result + "', Enter Number from Choice!");
+            }catch (ScannerInputException e){
+                System.out.println(e.getMessage());
+                System.out.println("................................................................\n");
 
-                case "3":
-                    scanner.nextLine();
-                    System.out.println("Buyer id : ");
-                    int userId = scanner.nextInt();
-                    scanner.nextLine();
-                    System.out.println("product name : ");
-                    String product = scanner.nextLine();
-                    System.out.println("Number quantity: ");
-                    int items = scanner.nextInt();
-
-
-                    boolean isCarted = cartService.addToCart(userId, product, items);
-
-
-                    if(isCarted) {
-                        System.out.println("Successfully add a product in cart.");
-                    } else {
-                        System.out.println("Something went wrong, try Again.");
-                    }
-                    break;
-
-                case "4":
-                    scanner.nextLine();
-                    System.out.println("Cart id : ");
-                    int cartId = scanner.nextInt();
-
-                    boolean isDeleted = cartService.removeCart(cartId);
-
-                    if(isDeleted) {
-                        System.out.println("Successfully Deleted a Cart's data.");
-                    } else {
-                        System.out.println("Something went wrong, try Again.");
-                    }
-                    break;
-
-                case "5":
-                    scanner.nextLine();
-
-                    System.out.println("firstName:");
-                    String firstName = scanner.nextLine();
-                    System.out.println("lastName:");
-                    String lastName = scanner.nextLine();
-                    System.out.println("Customer id : ");
-                    int id = scanner.nextInt();
-
-                    boolean isUpdated = userService.updateProfile(id, firstName, lastName);
-
-                    if(isUpdated) {
-                        System.out.println("Successfully Updated.");
-                    } else {
-                        System.out.println("Something went wrong, try Again.");
-                    }
-                    break;
-
-                case "6":
-                    scanner.nextLine();
-                    System.out.println("Your id : ");
-                    int yourId = scanner.nextInt();
-                    cartService.getUserCarts(yourId).forEach(System.out::println);
-                    break;
-
-                case "7":
-
-                    scanner.nextLine();
-                    System.out.println("Cart Id:");
-                    int cart_Id = scanner.nextInt();
-                    scanner.nextLine();
-                    System.out.println("product Name:");
-                    String product_name = scanner.nextLine();
-                    System.out.println("Number of quantity : ");
-                    int quantity = scanner.nextInt();
-
-                    boolean isCartUpdated = cartService.updateCart(cart_Id, product_name, quantity);
-
-                    if(isCartUpdated) {
-                        System.out.println("Successfully Updated.");
-                    } else {
-                        System.out.println("Something went wrong, try Again.");
-                    }
-                    break;
-
-                case "8":
-                    scanner.nextLine();
-                    System.out.println("Your id : ");
-                    int uId = scanner.nextInt();
-                    invoiceServer.getUserInvoices(uId).forEach(System.out::println);
-                    break;
-
-                case "0":
-                    running = false;
-                    break;
-                default:
-                    System.out.println("Invalid Input");
             }
         }
     }

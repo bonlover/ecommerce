@@ -1,5 +1,6 @@
 package dev.gurung.services;
 
+import dev.gurung.exceptions.QuantityOutOfStockException;
 import dev.gurung.models.Cart;
 import dev.gurung.models.Inventory;
 import dev.gurung.models.Invoice;
@@ -37,14 +38,15 @@ public class InvoiceService {
                 return true;
 
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if(updateQuantity < 0){
-            System.out.println("Product is out of stock:" +updateQuantity);
-        }
-        return false;
+            throw new QuantityOutOfStockException("Number of Stock in Inventory : '" +inventory.getQuantity() +"'.");
 
+        } catch (QuantityOutOfStockException e) {
+            System.out.println(e.getMessage());
+            System.out.println("................................................................\n");
+
+            return false;
+
+        }
 
     }
 

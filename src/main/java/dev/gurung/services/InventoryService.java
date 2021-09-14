@@ -39,19 +39,6 @@ public class InventoryService {
         }
         return false;
     }
-//    public boolean buyProduct(String product, int quantity){
-//        Inventory inventory = inventoryRepo.getByName(product);
-//
-//        if(product.equals(inventory.getProductName())){
-//            inventory.setId(inventory.getId());
-//            inventory.setQuantity(quantity);
-//
-//            inventoryRepo.update(inventory);
-//            return true;
-//
-//        }
-//        return false;
-//    }
 
     public boolean deleteProduct(Integer id){
         Inventory inventory = inventoryRepo.getById(id);
