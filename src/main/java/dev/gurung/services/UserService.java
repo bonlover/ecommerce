@@ -1,6 +1,7 @@
 package dev.gurung.services;
 
 import dev.gurung.exceptions.EmailAlreadyExistsException;
+import dev.gurung.exceptions.InValidEmailFormatException;
 import dev.gurung.models.User;
 import dev.gurung.repositories.UserRepo;
 
@@ -40,18 +41,31 @@ public class UserService {
     public boolean signup(String firstName, String lastName, String email, String password){
 
         try{
-            User existEmail = userRepo.getByEmail(email);
+            boolean isEmail = EmailValidationService.IsValidEmail(email);
+            if(isEmail == true){
 
-            if(existEmail == null){
-                    userRepo.add( new User(firstName, lastName, email, password));
-                    return true;
+                try{
+                    User existEmail = userRepo.getByEmail(email);
+
+                    if(existEmail == null){
+                        userRepo.add( new User(firstName, lastName, email, password));
+                        return true;
+                    }
+                    throw new EmailAlreadyExistsException("Email: '" +email +"'  already taken, try other!");
+                }catch (EmailAlreadyExistsException e){
+                    System.out.println(e.getMessage());
+                    System.out.println("................................................................\n");
+                    return false;
+                }
+
             }
-            throw new EmailAlreadyExistsException("Email: '" +email +"'  already taken, try other!");
-        }catch (EmailAlreadyExistsException e){
+
+            throw  new InValidEmailFormatException("Invalid email format");
+        }catch (InValidEmailFormatException e){
             System.out.println(e.getMessage());
-            System.out.println("................................................................\n");
             return false;
         }
+
     }
 
     public List<User> getAllCustomers(){
